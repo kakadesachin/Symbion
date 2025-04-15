@@ -1,0 +1,36 @@
+
+name: Symbion CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: Restore and build
+        run: |
+          cd core
+          dotnet restore
+          dotnet build --no-restore
+
+      - name: Run unit tests
+        run: |
+          cd core
+          dotnet test
+
+      - name: Validate policy DSL files
+        run: |
+          pip install pyyaml
+          find plugins/dsl -name "*.yaml" -exec python3 .github/scripts/validate_yaml.py {} +

@@ -1,0 +1,43 @@
+
+@startuml SymbionFramework
+title Symbion Framework - Architecture Overview
+
+package "Core Engine (.NET Core)" {
+  [Resource Registry] as RR
+  [Resource State Chain] as RSC
+  [Policy Engine] as PE
+  [Simulation Engine] as SE
+  [Plugin Adapter Layer] as PAL
+
+  RR --> RSC
+  PE --> RR
+  SE --> RSC
+  PAL --> PE
+}
+
+package "Plugin Layer (User-defined)" {
+  [Policy Plugin] as PP
+  [Resource Extension] as RE
+}
+
+PP ..> PAL
+RE ..> RR
+
+package "AI & Analysis" {
+  [Causal Graph Builder] as CGB
+  [AI Recommender] as AIR
+}
+
+CGB --> RSC
+AIR --> CGB
+
+package "Governance Sandbox UI (React)" {
+  [Policy Simulator UI] as UI1
+  [Resource Graph Visualizer] as UI2
+  [AI Recommendation Viewer] as UI3
+}
+
+UI1 --> PE
+UI2 --> RR
+UI3 --> AIR
+@enduml
